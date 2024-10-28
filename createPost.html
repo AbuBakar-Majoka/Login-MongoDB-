@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="postForm">
+        <label for="postTitle">Post Title</label>
+        <input type="text" id="postTitle" name="postTitle" required>
+
+        <label for="postBody">Post Body</label>
+        <input type="text" id="postBody" name="postBody" required>
+
+        <button type="submit" id="postNow">Post Now</button>
+    </form>
+
+    <script>
+        let postForm = document.getElementById("postForm");
+        postForm.addEventListener("submit", async(e) => {
+            e.preventDefault();
+
+            let postTitle = document.getElementById("postTitle").value;
+            let postBody = document.getElementById("postBody").value;
+
+            try {
+                const response = await fetch("/createPost", {
+                    method :"POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                    },
+                    body : JSON.stringify({postTitle, postBody})
+                });
+                
+                const data = await response.json();
+
+                alert(data.msg);
+            } catch (error) {
+                alert("Unable to create Post, try try again till you succeed");
+            }
+        })
+    </script>
+</body>
+</html>

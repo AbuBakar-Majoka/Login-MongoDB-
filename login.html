@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container">
+        <form action="" id="loginForm">
+            <label for="email">Email :</label>
+            <input type="email" id="email" name="email" placeholder="Enter email" required>
+
+            <label for="password">Password :</label>
+            <input type="password" id="password" name="password" placeholder="Enter password" required>
+            <button type="submit" id="login">Login</button>
+        </form>
+
+        <script>
+            let loginForm = document.getElementById("loginForm");
+            loginForm.addEventListener("submit", async(e) => {
+                e.preventDefault();
+
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("password").value;
+
+                try {
+                    let response = await fetch("/login",{
+                        method : "POST", 
+                        headers :{
+                            "Content-Type" : "application/json"
+                        },
+                        body: JSON.stringify({email,password}),
+                    })
+
+                    let data = await response.json();
+
+                    if (response.status == 200) {
+                        alert(data.msg);
+                        window.location.href = "profile.html";
+                    } else {
+                        alert(data.msg);
+                    }
+
+                } catch (error) {
+                    alert("Error occure, plz try again");
+                }
+            })
+        </script>
+    </div>
+</body>
+</html>

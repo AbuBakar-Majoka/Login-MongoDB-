@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Your Posts</h1>
+    <div class="postContainer"></div>
+
+    <button id="createPost">Create Post</button>
+
+    <button id="goToTimelime">Timeline</button>
+    <script>
+        let postContainer = document.querySelector(".postContainer");
+
+        async function posts(){
+            try {
+                let response = await fetch("/profile", {
+                    method : "GET",
+                    credentials : "include", // Include cookies for authentication
+                });
+
+                let myPosts = await response.json();
+                console.log(myPosts);
+                for (let i = 0; i < myPosts.posts.length; i++) {
+                    let cont = document.createElement("div");
+                    let title = document.createElement("h3");
+                    title.innerText = myPosts.posts[i].title;
+
+                    let body = document.createElement("p");
+                    body.innerText = myPosts.posts[i].body;
+                    cont.appendChild(title);
+                    cont.appendChild(body);
+
+                    postContainer.appendChild(cont);
+                }
+
+            } catch (error) {
+                console.log("error :" + error);
+            }
+        }
+
+        posts();
+
+        let createPost = document.getElementById("createPost");
+
+        createPost.addEventListener("click", () => {
+            window.location.href = "createPost.html"
+        })
+
+        let goToTimelime = document.getElementById("goToTimelime");
+
+        goToTimelime.addEventListener("click", () => {
+            window.location.href = "timeLine.html"
+        })
+    </script>
+</body>
+</html>

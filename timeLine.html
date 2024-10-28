@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="profileBtn">Profile</button>
+
+    <h1>All Posts</h1>
+    <div class="cont"></div>
+
+    <script>
+
+        let postContainer = document.querySelector(".cont");
+        async function posts() {
+            try {
+                let response = await fetch("/timeLine",{
+                    method : "GET",
+                    credentials : "include",
+                })
+
+                let myPosts = await response.json();
+                console.log(myPosts)
+                for (let i = 0; i < myPosts.posts.length; i++) {
+                    let title = document.createElement("h3");
+                    title.textContent = myPosts.posts[i].title;
+
+                    let body = document.createElement("p");
+                    body.textContent = myPosts.posts[i].body;
+
+                    let myContainer = document.createElement("div");
+                    myContainer.appendChild(title);
+                    myContainer.appendChild(body);
+
+                    postContainer.appendChild(myContainer);
+                }
+
+            } catch (error) {
+                console.log("Error: " + error)
+            }
+        }
+        posts();
+
+        
+        let profileBtn = document.getElementById("profileBtn");
+        profileBtn.addEventListener("click", () => {
+            window.location.href = "profile.html";
+        })
+    </script>
+</body>
+</html>

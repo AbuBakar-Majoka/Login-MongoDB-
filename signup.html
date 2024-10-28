@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My app</title>
+</head>
+<body>
+    <div class="cont">
+        <h1>Welcome to Our website</h1>
+    <form action="" id="signUpForm">
+        <label for="name">Name :</label>
+        <input type="text" id="name" name="name" placeholder="Enter Name" required>
+
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" placeholder="Enter email" required>
+
+        <label for="password">Password :</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <button type="submit">Sign Up</button>
+    </form>
+    <p>already have an account? <button id="loginBtn">Login</button> </p>
+    
+    </div>
+    <script>
+        let signUpForm = document.getElementById("signUpForm");
+        signUpForm.addEventListener("submit", async(e) => {
+            e.preventDefault();
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            try {
+                const response = await fetch("/signup", {
+                    method :"POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                    },
+                    body : JSON.stringify({name, email, password})
+                });
+
+                const data = await response.json();
+
+                if (response.status == 200) {
+                    alert(data.msg);
+                    window.location.href = "login.html";
+                } else {
+                    alert(data.msg);
+                }
+
+            } catch (error) {
+                alert("Error occur");
+            }
+        })
+
+        let loginBtn = document.getElementById("loginBtn");
+        loginBtn.addEventListener("click", () => {
+            window.location.href = "login.html"
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My app</title>
+</head>
+<body>
+    <div class="cont">
+        <h1>Welcome to Our website</h1>
+        <p>First register yourself and than login to explore</p>
+
+    <button id="signUpBtn">Register</button>
+    <button id="loginBtn">Login</button>
+    </div>
+    <script>
+        let signUpBtn = document.getElementById("signUpBtn");
+        signUpBtn.addEventListener("click", () => {
+            window.location.href = "signup.html";
+        })
+
+        let loginBtn = document.getElementById("loginBtn");
+        loginBtn.addEventListener("click", () => {
+            window.location.href = "login.html"
+        })
+    </script>
+</body>
+</html>
