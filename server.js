@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
+    res.sendFile(path.join(__dirname, "index.html")); 
 })
 
 app.post("/signUp", async (req, res) => {
@@ -117,6 +117,23 @@ function authentication(req, res, next) {
     }
 }
 
+
+app.get("/profile",authentication, async(req, res) => {
+    try {
+        let userId = req.user.userId;
+        let posts = await Post.find({postOwner: userId});
+        return res.status(200).json({
+            posts
+        })
+    } catch (error) {
+        return res.status(500).json({
+            msg : "Error occur in fetching posts"
+        })
+    }
+})
+
+
+
 app.post("/createPost",authentication, async(req, res) => {
     let postTitle = req.body.postTitle;
     let postBody = req.body.postBody;
@@ -140,20 +157,58 @@ app.post("/createPost",authentication, async(req, res) => {
     }
 })
 
-app.get("/profile",authentication, async(req, res) => {
+
+app.put("/updatePost",authentication, async(req,res) => {
+    let {postId, title, body} = req.body;
     try {
-        let userId = req.user.userId;
-        let posts = await Post.find({postOwner: userId});
-        // let posts = await Post.find({postOwner: { $ne: userId }});
-        return res.status(200).json({
-            posts
+        let updatedPost = await Post.findOneAndUpdate(
+            {_id : postId, postOwner : req.user.userId},
+            {title, body},
+            {new : true} //optional: agr ye ni kren gy to post update kr dy ga lkn hmen purani post return kry ga
+        );
+
+        if (updatedPost) {
+            return res.status(200).json({
+                msg :"Post updated successfully",
+            })
+        }
+
+        return res.status(400).json({
+            msg : "Post not found"
         })
+
     } catch (error) {
         return res.status(500).json({
-            msg : "Error occur in fetching posts"
+            msg : "Unable to update post",
         })
     }
 })
+
+
+app.delete("/deletePost",authentication, async(req, res) => {
+    try {
+        let postId = req.cookies.postId;
+        let postToDel = await Post.findOneAndDelete(
+            {_id : postId, postOwner : req.user.userId}
+        );
+
+        if (postToDel) {
+            return res.status(200).json({
+                msg :"Post deletedsuccessfully"
+            })
+        };
+
+        return res.status(400).json({
+            msg :"Didn't found post"
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            msg :"Error: Not deleted"
+        })
+    }
+})
+
 
 app.get("/timeLine",authentication, async(req, res) => {
     try {

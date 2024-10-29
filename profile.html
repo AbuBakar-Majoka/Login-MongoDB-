@@ -31,8 +31,31 @@
 
                     let body = document.createElement("p");
                     body.innerText = myPosts.posts[i].body;
+
+                    let updataBtn = document.createElement("button");
+                    updataBtn.innerText = "Updata Post";
+                    updataBtn.addEventListener("click", () => {
+                        localStorage.setItem("postId", myPosts.posts[i]._id);
+                        window.location.href = "updatePost.html";
+                    })
+
+                    let deleteBtn = document.createElement("button");
+                    deleteBtn.innerText = "Delete Post";
+                    deleteBtn.addEventListener("click", async() => {
+                        document.cookie = `postId=${myPosts.posts[i]._id}`;
+
+                        const deleteRes = await fetch("/deletePost", {
+                            method : "DELETE",
+                            credentials : "include"
+                        });
+                        let data = await deleteRes.json();
+                        alert(data.msg);
+                    })
+
                     cont.appendChild(title);
                     cont.appendChild(body);
+                    cont.appendChild(updataBtn);
+                    cont.appendChild(deleteBtn);
 
                     postContainer.appendChild(cont);
                 }
