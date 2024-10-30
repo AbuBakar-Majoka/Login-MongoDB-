@@ -13,6 +13,9 @@
         <label for="body">Post Body:</label>
         <input type="text" id="body" name="body">
 
+        <label for="uploadFile">Upload File</label>
+        <input type="file" id="uploadFile" name="uploadFile">
+
         <button type="submit" id="updataPost">Update Now</button>
     </form>
     <script>
@@ -21,18 +24,19 @@
 
         updateForm.addEventListener("submit", async(e) => {
             e.preventDefault();
+            // let title = document.getElementById("title").value;
+            // let body = document.getElementById("body").value;
+            
+            let formData = new FormData(updateForm);
+
             let postId = localStorage.getItem("postId");
-            let title = document.getElementById("title").value;
-            let body = document.getElementById("body").value;
+            formData.append("postId", postId);
 
             try {
                 let response = await fetch("/updatePost",{
                     method : "PUT",
-                    headers : {
-                        "Content-Type" : "application/json",
-                    },
                     credentials : "include",
-                    body : JSON.stringify({postId, title, body})
+                    body : formData
                 });
 
                 let data = await response.json();

@@ -23,7 +23,7 @@
                 });
 
                 let myPosts = await response.json();
-                console.log(myPosts);
+                // console.log(myPosts);
                 for (let i = 0; i < myPosts.posts.length; i++) {
                     let cont = document.createElement("div");
                     let title = document.createElement("h3");
@@ -32,8 +32,16 @@
                     let body = document.createElement("p");
                     body.innerText = myPosts.posts[i].body;
 
+                    if (myPosts.posts[i].filePath) {
+                        let img = document.createElement("img");
+                        img.src = `/${myPosts.posts[i].filePath}`; 
+                        img.alt = "Post Image";
+                        img.style.width = "200px";
+                        cont.appendChild(img);
+                    }
+
                     let updataBtn = document.createElement("button");
-                    updataBtn.innerText = "Updata Post";
+                    updataBtn.innerText = "Update Post";
                     updataBtn.addEventListener("click", () => {
                         localStorage.setItem("postId", myPosts.posts[i]._id);
                         window.location.href = "updatePost.html";

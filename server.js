@@ -3,6 +3,7 @@ const cookieParser = require("cookie-parser");
 var jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const path = require('path');
+const multer = require("multer");
 const app = express();
 const port = 3000;
 
@@ -27,7 +28,8 @@ const postSchema = new mongoose.Schema({
     postOwner : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User'
-    }
+    },
+    filePath: String
 })
 
 let User = mongoose.model("User", userSchema);
@@ -36,6 +38,20 @@ let Post = mongoose.model("Post", postSchema);
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(__dirname));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads')
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix)
+    }
+})
+
+const upload = multer({ storage })
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "index.html")); 
@@ -134,7 +150,7 @@ app.get("/profile",authentication, async(req, res) => {
 
 
 
-app.post("/createPost",authentication, async(req, res) => {
+app.post("/createPost",authentication, upload.single('uploadFile'), async(req, res) => {
     let postTitle = req.body.postTitle;
     let postBody = req.body.postBody;
     let userId = req.user.userId;
@@ -143,7 +159,8 @@ app.post("/createPost",authentication, async(req, res) => {
         let newPost = new Post({
             title : postTitle,
             body : postBody,
-            postOwner : userId
+            postOwner : userId,
+            filePath: req.file ? req.file.path : null
         })
 
         await newPost.save();
@@ -158,12 +175,18 @@ app.post("/createPost",authentication, async(req, res) => {
 })
 
 
-app.put("/updatePost",authentication, async(req,res) => {
+app.put("/updatePost", authentication, upload.single('uploadFile'), async(req,res) => {
     let {postId, title, body} = req.body;
+
+    let updatedData = { title, body};
+    if (req.file) {
+        updatedData.filePath = req.file.path;
+    }
+
     try {
         let updatedPost = await Post.findOneAndUpdate(
             {_id : postId, postOwner : req.user.userId},
-            {title, body},
+            updatedData,
             {new : true} //optional: agr ye ni kren gy to post update kr dy ga lkn hmen purani post return kry ga
         );
 

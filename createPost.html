@@ -6,12 +6,15 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="" id="postForm">
+    <form action="" id="postForm" enctype="multipart/form-data">
         <label for="postTitle">Post Title</label>
         <input type="text" id="postTitle" name="postTitle" required>
 
         <label for="postBody">Post Body</label>
         <input type="text" id="postBody" name="postBody" required>
+
+        <label for="uploadFile">Upload File</label>
+        <input type="file" id="uploadFile" name="uploadFile" >
 
         <button type="submit" id="postNow">Post Now</button>
     </form>
@@ -21,16 +24,17 @@
         postForm.addEventListener("submit", async(e) => {
             e.preventDefault();
 
-            let postTitle = document.getElementById("postTitle").value;
-            let postBody = document.getElementById("postBody").value;
+            let formData = new FormData(postForm);
+
+            // let postTitle = document.getElementById("postTitle").value;
+            // let postBody = document.getElementById("postBody").value;
 
             try {
                 const response = await fetch("/createPost", {
                     method :"POST",
-                    headers : {
-                        "Content-Type" : "application/json",
-                    },
-                    body : JSON.stringify({postTitle, postBody})
+                    credentials: "include",
+                    // body : JSON.stringify({postTitle, postBody})
+                    body : formData
                 });
                 
                 const data = await response.json();
