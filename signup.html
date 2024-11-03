@@ -19,11 +19,21 @@
         <input type="password" id="password" name="password" placeholder="Enter password" required>
         <button type="submit">Sign Up</button>
     </form>
+
     <p>already have an account? <button id="loginBtn">Login</button> </p>
+
+    <form action="" id="otpForm" style="display: none;">
+        <label for="otp">Enter OTP: </label>
+        <input type="text" name="otp" id="otp" required>
+
+        <button type="submit">Verify OTP</button>
+    </form>
     
     </div>
     <script>
         let signUpForm = document.getElementById("signUpForm");
+        let otpForm = document.getElementById("otpForm");
+
         signUpForm.addEventListener("submit", async(e) => {
             e.preventDefault();
 
@@ -41,16 +51,41 @@
                 });
 
                 const data = await response.json();
+                alert(data.msg);
 
                 if (response.status == 200) {
-                    alert(data.msg);
-                    window.location.href = "login.html";
+                    signUpForm.style.display = "none";
+                    otpForm.style.display = "block";
                 } else {
                     alert(data.msg);
                 }
 
             } catch (error) {
                 alert("Error occur");
+            }
+        })
+
+        otpForm.addEventListener("submit", async(e) => {
+            e.preventDefault();
+            let email = document.getElementById("email").value;
+            let otp = document.getElementById("otp").value;
+
+            try {
+                let response = await fetch("verifyOtp", {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : "application/json",
+                    },
+                    body: JSON.stringify({ email, otp })
+                });
+                let data = await response.json();
+                
+                if (response.status == 200) {
+                    alert(data.msg);
+                    window.location.href = "login.html";
+                }
+            } catch (error) {
+                alert("Error verifying otp");
             }
         })
 

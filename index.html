@@ -12,6 +12,8 @@
 
     <button id="signUpBtn">Register</button>
     <button id="loginBtn">Login</button>
+    <p>If you are an admin, plz login from here</p>
+    <button id="adminLoginBtn">Admin Login</button>
     </div>
     <script>
         let signUpBtn = document.getElementById("signUpBtn");
@@ -22,6 +24,11 @@
         let loginBtn = document.getElementById("loginBtn");
         loginBtn.addEventListener("click", () => {
             window.location.href = "login.html"
+        })
+
+        let adminLoginBtn = document.getElementById("adminLoginBtn");
+        adminLoginBtn.addEventListener("click", () => {
+            window.location.href = "adminLogin.html"
         })
     </script>
 </body>

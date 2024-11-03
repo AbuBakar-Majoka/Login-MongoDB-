@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form action="" id="adminLoginForm">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <button type="submit">Login Now</button>
+    </form>
+
+    <script>
+        let adminLoginForm = document.getElementById("adminLoginForm");
+        adminLoginForm.addEventListener("submit", async(e) => {
+            e.preventDefault();
+
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            try {
+                let response = await fetch("/adminLogin", {
+                    method : "POST",
+                    headers : {
+                        "Content-Type" : "application/json"
+                    },
+                    body : JSON.stringify({email, password}),
+                })
+
+                let data = await response.json();
+
+                if (response.status == 200) {
+                    alert(data.msg);
+                    window.location.href = "csv.html";
+                } else {
+                    alert(data.msg);
+                }
+
+            } catch (error) {
+                alert("Error occur, plz try again later");
+            }
+        })
+    </script>
+</body>
+</html>
